@@ -102,7 +102,8 @@ enum ofxWidgetType
     OFX_UI_WIDGET_IMAGESLIDER_V = 35, 
     OFX_UI_WIDGET_CUSTOMIMAGEBUTTON = 36,
     OFX_UI_WIDGET_TEXTAREA = 37,
-    OFX_UI_WIDGET_CUSTOMWIDGET = 38
+    OFX_UI_WIDGET_CUSTOMWIDGET = 38,
+    OFX_UI_WIDGET_BASE_DRAWS = 39
 };
 
 enum ofxWidgetOrientation
@@ -249,8 +250,10 @@ enum ofxUIThemeType
 #include "ofxUISpectrum.h"
 #include "ofxUIMovingGraph.h"
 #include "ofxUIImage.h"
+#include "ofxUIBaseDraws.h"
 #include "ofxUIImageSampler.h"
 #include "ofxUICanvas.h"
 #include "ofxUIScrollableCanvas.h"
+
 
 #endif
