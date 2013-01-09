@@ -64,6 +64,7 @@
 
 enum ofxWidgetType
 {
+    OFX_UI_WIDGET_DRAGGABLE_CANVAS = -1,
 	OFX_UI_WIDGET_LABEL = 0,
 	OFX_UI_WIDGET_CANVAS = 1,
 	OFX_UI_WIDGET_TOGGLE = 2,
@@ -254,6 +255,7 @@ enum ofxUIThemeType
 #include "ofxUIImageSampler.h"
 #include "ofxUICanvas.h"
 #include "ofxUIScrollableCanvas.h"
+#include "ofxUIDraggableCanvas.h"
 
 
 #endif
