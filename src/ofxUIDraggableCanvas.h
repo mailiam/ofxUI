@@ -276,13 +276,14 @@ public:
                 widgets[i]->draw();
             }
 		}
+        
 		
 		glDisable(GL_DEPTH_TEST);
         ofPopStyle();
 //        fbo.end();
 //        
 //        ofSetColor(255);
-//        fbo.draw(sRect->getX(), sRect->getY());
+//        fbo.draw(sRect->getX(), sRect->getY());x
     }
     
     virtual void setPosition(int x, int y)
@@ -403,6 +404,7 @@ public:
                     isDragging = true; 
                     ppos = ofPoint(x,y);
                     vel.set(0,0);
+                    
                 }
                 else
                 {
@@ -454,8 +456,9 @@ public:
         {
             isDragging = false; 
             pos = ofPoint(x,y);
+            triggerEvent(this);
         }
-    }	
+    }
 
     ofxUIRectangle *getSRect()
     {

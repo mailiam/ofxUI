@@ -7,10 +7,13 @@ void testApp::setup()
     gui->addWidgetDown(new ofxUILabel("OFXUI TUTORIAL", OFX_UI_FONT_LARGE)); 
     gui->addSlider("BACKGROUND VALUE",0.0,255.0,100.0,304,16);
     gui->addWidgetDown(new ofxUIToggle(32, 32, false, "FULLSCREEN"));
+    gui->setName("DEFUALT");
     
-    ofxUIDraggableCanvas * draggable = (ofxUIDraggableCanvas *) gui->addWidgetDown(new ofxUIDraggableCanvas(0, 0, 100, 100));
-    draggable->addSlider("DRAGGABLE", 0, 100, 50, 100, 16);
-    ofAddListener(gui->newGUIEvent, this, &testApp::guiEvent); 
+    ofxUIDraggableCanvas * draggable = (ofxUIDraggableCanvas *) gui->addWidgetDown(new ofxUIDraggableCanvas(0, 0, 100, 100, gui));
+    draggable->addLabel("PARENT");
+    draggable->setName("DRAGGABLE");
+    ofAddListener(gui->newGUIEvent, this, &testApp::guiEvent);
+    ofAddListener(draggable->newGUIEvent, this, &testApp::guiEvent); 
     gui->loadSettings("GUI/guiSettings.xml"); 
     gui->autoSizeToFitWidgets();
 }
@@ -41,6 +44,12 @@ void testApp::guiEvent(ofxUIEventArgs &e)
     {
         ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
         ofSetFullscreen(toggle->getValue());   
+    }
+    else if(e.widget->getKind() == OFX_UI_WIDGET_DRAGGABLE_CANVAS)
+    {
+        ofxUIDraggableCanvas * canvas = (ofxUIDraggableCanvas *) e.widget;
+        ofxUILabel * label = (ofxUILabel *)canvas->getWidget("PARENT");
+        label->setLabel(canvas->getParent()->getName());
     }
 }
 //--------------------------------------------------------------
