@@ -17,9 +17,7 @@ void testApp::setup()
     gui->addWidgetDown(new ofxUIToggle(32, 32, false, "FULLSCREEN"));
     //gui->addWidgetDown(new ofxUIScrollableCanvas(0, 0, 300, 300));
     dirList = (ofxUIDirList* )gui->addWidgetDown(new ofxUIDirList("DIRECTORY", &dir, 300, 300));
-    ofRectangle * rect = dirList->getRect();
-    dirList -> setScrollArea(rect->x, rect->y, rect->width, rect->height);
-    dirList ->autoSizeToFitWidgets();
+    
     
     ofAddListener(gui->newGUIEvent, this, &testApp::guiEvent);
     //gui->loadSettings("GUI/guiSettings.xml");
