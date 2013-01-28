@@ -257,6 +257,7 @@ enum ofxUIThemeType
 #include "ofxUICanvas.h"
 #include "ofxUIScrollableCanvas.h"
 #include "ofxUIDraggableCanvas.h"
+#include "ofxUIDirList.h"
 
 
 #endif
