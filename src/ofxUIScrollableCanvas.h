@@ -60,6 +60,7 @@ public:
     {
         kind = OFX_UI_WIDGET_SCROLLABLECANVAS;
         sRect = new ofxUIRectangle(rect->x, rect->y, rect->getWidth(), rect->getHeight());
+		sRect->setParent(rect);
         isScrolling = false; 
         vel.set(0);
         pos.set(0); 
@@ -101,6 +102,11 @@ public:
     {
         snapping = _snapping; 
     }
+	
+	void setStickyDistance(float _distance)
+	{
+		stickyDistance = _distance;
+	}
     
     void setScrollArea(float x, float y, float w, float h)
     {
@@ -140,14 +146,21 @@ public:
         scrollY = _scrollY;
     }
     
+	void autoSizeToFitWidgets() //Setting padding size accordung to sRect allows proper widget arrangement
+	{
+		ofxUICanvas::autoSizeToFitWidgets();
+		paddedRect->width = sRect->width+padding*2;
+        paddedRect->height = sRect->height+padding*2;
+	}
+	
     void update()
     {		     
         if(!isScrolling)
         {
             if(scrollX && snapping)
             {
-                float dxLeft = rect->x - sRect->x; 
-                float dxRight = (sRect->x+sRect->getWidth()) - (rect->x+rect->getWidth()); 
+                float dxLeft = rect->getX() - sRect->getX();
+                float dxRight = (sRect->getX()+sRect->getWidth()) - (rect->getX()+rect->getWidth()); 
                 
                 if(fabs(dxLeft) < stickyDistance)
                 {
@@ -187,8 +200,8 @@ public:
             
             if(scrollY && snapping)
             {
-                float dyTop = rect->y - sRect->y; 
-                float dyBot = (sRect->y+sRect->getHeight()) - (rect->y+rect->getHeight()); 
+                float dyTop = rect->getY() - sRect->getY();
+                float dyBot = (sRect->getY()+sRect->getHeight()) - (rect->getY()+rect->getHeight());
                 if(fabs(dyBot) < stickyDistance)
                 {
                     nearTop = false;
@@ -231,6 +244,8 @@ public:
             vel.limit(100);
             if(scrollX && fabs(vel.x) > 1.0) rect->x += floor(vel.x);
             if(scrollY && fabs(vel.y) > 1.0) rect->y += floor(vel.y);
+			sRect->x = -rect->x; //reset sRect position
+			sRect->y = -rect->y;
             
             vel *=damping;    
             acc.set(0); 
@@ -244,11 +259,35 @@ public:
     
     virtual void draw()
     {
-//        fbo.begin(); 
-//        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//        ofClearAlpha();
-        
         ofPushStyle();
+        
+		//Cleaner Masking out with stencil//
+        //set up to draw stencil
+        ///////////////////////////////////////////////////////
+        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glClear(GL_STENCIL_BUFFER_BIT);
+        
+        glEnable(GL_STENCIL_TEST); //Enable using the stencil buffer
+        glColorMask(0, 0, 0, 0); //Disable drawing colors to the screen
+        glDisable(GL_DEPTH_TEST); //Disable depth testing
+        glStencilFunc(GL_ALWAYS, 1, 1); //Make the stencil test always pass
+        //Make pixels in the stencil buffer be set to 1 when the stencil test passes
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+        
+        //Set all of the pixels below to be 1 in the stencil buffer...
+        drawScrollableRect();
+        
+        //switch from drawing stencil to scene to be masked
+        glColorMask(1, 1, 1, 1); //Enable drawing colors to the screen
+        //Make the stencil test pass only when the pixel is 1 in the stencil buffer
+        glStencilFunc(GL_EQUAL, 1, 1);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP); //Make the stencil buffer not change
+        
+        //Draw all pixels where the stencil buffer is 1...
+        
+        ///////////////////////////////////////////////////
+        
+        
 		glDisable(GL_DEPTH_TEST);
         glDisable(GL_LIGHTING);
         ofEnableBlendMode(OF_BLENDMODE_ALPHA);
@@ -269,15 +308,19 @@ public:
         
         drawOutlineHighlight();
         
+		ofRectangle asRect(sRect->getX(),sRect->getY(),sRect->getWidth(),sRect->getHeight()); //absolute sRect
+		
 		for(int i = widgets.size()-1; i >= 0; i--)
 		{
-            if(widgets[i]->isVisible() && widgets[i]->getRect()->rIntersects(*sRect))
+            if(widgets[i]->isVisible() && widgets[i]->getRect()->rIntersects(asRect))
             {
                 widgets[i]->draw();
             }
 		}
 		
 		glDisable(GL_DEPTH_TEST);
+        glDisable(GL_STENCIL_TEST); //Disable using the stencil buffer
+		
         ofPopStyle();
 //        fbo.end();
 //        
@@ -301,7 +344,7 @@ public:
 #ifdef TARGET_OPENGLES
     void touchDown(ofTouchEventArgs& touch)
     {        
-        if(rect->inside(touch.x, touch.y))
+        if(sRect->inside(touch.x, touch.y))
         {
 			for(int i = 0; i < widgets.size(); i++)
 			{
@@ -346,7 +389,9 @@ public:
                     pos = ofPoint(touch.x, touch.y);             
                     vel = pos-ppos; 
                     if(scrollX) rect->x +=vel.x; 
-                    if(scrollY) rect->y +=vel.y;             
+                    if(scrollY) rect->y +=vel.y;
+					sRect->x = -rect->x;
+					sRect->y = -rect->y;
                     ppos = pos; 
                 }
             }
@@ -409,7 +454,9 @@ public:
                     pos = ofPoint(x, y);             
                     vel = pos-ppos; 
                     if(scrollX) rect->x +=vel.x; 
-                    if(scrollY) rect->y +=vel.y;             
+                    if(scrollY) rect->y +=vel.y;
+					sRect->x = -rect->x;
+					sRect->y = -rect->y;
                     ppos = pos; 
                 }
             }
@@ -418,7 +465,7 @@ public:
     
     void mousePressed(int x, int y, int button) 
     {
-        if(rect->inside(x, y))
+        if(sRect->inside(x, y))
         {
             hit = true; 
             for(int i = 0; i < widgets.size(); i++)
@@ -460,6 +507,11 @@ public:
     ofxUIRectangle *getSRect()
     {
         return sRect; 
+    }
+	
+	bool isDraggable()
+    {
+        return true;
     }
 
 protected:
