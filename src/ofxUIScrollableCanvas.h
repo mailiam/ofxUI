@@ -145,6 +145,16 @@ public:
         scrollX = _scrollX;
         scrollY = _scrollY;
     }
+	
+	ofPoint getScrollPosMin()
+	{
+		return scrollPosMin;
+	}
+	
+	ofPoint getScrollPosMax()
+	{
+		return scrollPosMax;
+	}
     
 	void autoSizeToFitWidgets() //Setting padding size accordung to sRect allows proper widget arrangement
 	{
@@ -250,7 +260,11 @@ public:
             vel *=damping;    
             acc.set(0); 
         }
-        
+		
+		//Scroll Position
+		scrollPosMin = rect->percentInside(sRect->getRelativeMinX(), sRect->getRelativeMinY());
+		scrollPosMax = rect->percentInside(sRect->getRelativeMaxX(), sRect->getRelativeMaxY());
+				
 		for(int i = 0; i < widgets.size(); i++)
 		{
 			widgets[i]->update();
@@ -409,7 +423,7 @@ public:
         hitWidget = false; 
         if(isScrolling)
         {
-            isScrolling = false; 
+            isScrolling = false;
             pos = ofPoint(touch.x,touch.y);
         }        
     }
@@ -521,7 +535,8 @@ protected:
     bool snapping; 
     bool scrollX, scrollY; 
     bool nearTop, nearBot, nearRight, nearLeft;
-    bool hitWidget; 
+    bool hitWidget;
+	ofPoint scrollPosMin, scrollPosMax;
     ofPoint pos; 
     ofPoint ppos; 
     ofPoint vel; 
