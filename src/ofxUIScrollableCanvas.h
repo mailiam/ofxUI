@@ -1,4 +1,4 @@
-/********************************************************************************** 
+/**********************************************************************************
  
  Copyright (C) 2012 Syed Reza Ali (www.syedrezaali.com)
  
@@ -29,8 +29,8 @@
 #include "ofFbo.h"
 
 class ofxUIScrollableCanvas : public ofxUICanvas
-{    
-public:    
+{
+public:
     ~ofxUIScrollableCanvas()
     {
         delete sRect;
@@ -43,7 +43,7 @@ public:
     
     ofxUIScrollableCanvas(float x, float y, float w, float h, ofxUICanvas *sharedResources) : ofxUICanvas(x,y,w,h,sharedResources)
     {
-        initScrollable();        
+        initScrollable();
     }
     
     ofxUIScrollableCanvas() : ofxUICanvas()
@@ -55,52 +55,52 @@ public:
     {
         initScrollable();
     }
-
+	
     void initScrollable()
     {
         kind = OFX_UI_WIDGET_SCROLLABLECANVAS;
         sRect = new ofxUIRectangle(rect->x, rect->y, rect->getWidth(), rect->getHeight());
 		sRect->setParent(rect);
-        isScrolling = false; 
+        isScrolling = false;
         vel.set(0);
-        pos.set(0); 
-        ppos.set(0); 
-        acc.set(0); 
-        damping = .90; 
-        scrollX = false; 
-        scrollY = true; 
+        pos.set(0);
+        ppos.set(0);
+        acc.set(0);
+        damping = .90;
+        scrollX = false;
+        scrollY = true;
         
-        nearTop = false; 
-        nearBot = false;        
-        nearRight = false; 
+        nearTop = false;
+        nearBot = false;
+        nearRight = false;
         nearLeft = false;
         
-        hitWidget = false; 
+        hitWidget = false;
         stickyDistance = 100;
-        hit = false; 
-        snapping = true; 
+        hit = false;
+        snapping = true;
 #ifdef TARGET_OPENGLES
-        touchId = -1; 
+        touchId = -1;
 #endif
-//        initFbo(sRect->getWidth(),sRect->getHeight());        
+		//        initFbo(sRect->getWidth(),sRect->getHeight());
     }
-
-//    void initFbo(int w, int h)
-//    {
-//        fbo.allocate(w, h); 
-//        fbo.begin();
-//        ofClear(0,0,0,0);
-//        fbo.end();
-//    }
+	
+	//    void initFbo(int w, int h)
+	//    {
+	//        fbo.allocate(w, h);
+	//        fbo.begin();
+	//        ofClear(0,0,0,0);
+	//        fbo.end();
+	//    }
     
     void setDamping(float _damping)
     {
-        damping = _damping; 
+        damping = _damping;
     }
     
     void setSnapping(bool _snapping)
     {
-        snapping = _snapping; 
+        snapping = _snapping;
     }
 	
 	void setStickyDistance(float _distance)
@@ -110,34 +110,34 @@ public:
     
     void setScrollArea(float x, float y, float w, float h)
     {
-        sRect->x = x; 
-        sRect->y = y; 
+        sRect->x = x;
+        sRect->y = y;
         sRect->setWidth(w);
         sRect->setHeight(h);
-//        initFbo(w,h);
+		//        initFbo(w,h);
     }
     
     void setScrollAreaToScreen()
     {
-        sRect->x = 0; 
-        sRect->y = 0; 
+        sRect->x = 0;
+        sRect->y = 0;
         sRect->setWidth(ofGetWidth());
         sRect->setHeight(ofGetHeight());
-//        initFbo(sRect->getWidth(),sRect->getHeight());
+		//        initFbo(sRect->getWidth(),sRect->getHeight());
     }
     
     void setScrollAreaToScreenWidth()
     {
-        sRect->x = 0; 
+        sRect->x = 0;
         sRect->setWidth(ofGetWidth());
-//        initFbo(sRect->getWidth(),sRect->getHeight());        
+		//        initFbo(sRect->getWidth(),sRect->getHeight());
     }
-
+	
     void setScrollAreaToScreenHeight()
     {
         sRect->y = 0;
         sRect->setHeight(ofGetHeight());
-//        initFbo(sRect->getWidth(),sRect->getHeight());        
+		//        initFbo(sRect->getWidth(),sRect->getHeight());
     }
     
     void setScrollableDirections(bool _scrollX, bool _scrollY)
@@ -145,6 +145,18 @@ public:
         scrollX = _scrollX;
         scrollY = _scrollY;
     }
+	
+	void setScrollPosX(float pct)
+	{
+		sRect->x = pct*(rect->width);
+		rect->x = -sRect->x;
+	}
+	
+	void setScrollPosY(float pct)
+	{
+		sRect->y = pct*(rect->height);
+		rect->y = -sRect->y;
+	}
 	
 	ofPoint getScrollPosMin()
 	{
@@ -164,48 +176,48 @@ public:
 	}
 	
     void update()
-    {		     
+    {
         if(!isScrolling)
         {
             if(scrollX && snapping)
             {
                 float dxLeft = rect->getX() - sRect->getX();
-                float dxRight = (sRect->getX()+sRect->getWidth()) - (rect->getX()+rect->getWidth()); 
+                float dxRight = (sRect->getX()+sRect->getWidth()) - (rect->getX()+rect->getWidth());
                 
                 if(fabs(dxLeft) < stickyDistance)
                 {
-                    nearLeft = true;                     
-                }            
+                    nearLeft = true;
+                }
                 else if(fabs(dxRight) < stickyDistance)
                 {
-                    nearRight = true; 
+                    nearRight = true;
                 }
                 else
                 {
-                    nearLeft = false; 
-                    nearRight = false;                     
+                    nearLeft = false;
+                    nearRight = false;
                 }
                 
                 if(dxLeft > 0)
                 {
                     acc.x += (-dxLeft)/10.0;
-                    acc.x -=vel.x*(1.0-damping); 
+                    acc.x -=vel.x*(1.0-damping);
                 }
                 else if(nearLeft)
                 {
                     acc.x += (-dxLeft)/10.0;
-                    acc.x -=vel.x*(1.0-damping); 
-                }                
+                    acc.x -=vel.x*(1.0-damping);
+                }
                 else if(dxRight > 0)
                 {
                     acc.x += (dxRight)/10.0;
-                    acc.x -=vel.x*(1.0-damping); 	
+                    acc.x -=vel.x*(1.0-damping);
                 }
                 else if(nearRight)
                 {
                     acc.x += (dxRight)/10.0;
-                    acc.x -=vel.x*(1.0-damping); 	
-                }                
+                    acc.x -=vel.x*(1.0-damping);
+                }
             }
             
             if(scrollY && snapping)
@@ -222,27 +234,27 @@ public:
                     nearTop = true;
                     nearBot = false;
                 }
-                   
+				
                 if(dyTop > 0)
                 {
                     acc.y += (-dyTop)/10.0;
-                    acc.y -=vel.y*(1.0-damping); 
+                    acc.y -=vel.y*(1.0-damping);
                 }
                 else if(nearTop)
                 {
                     acc.y += (-dyTop)/10.0;
-                    acc.y -=vel.y*(1.0-damping);                     
+                    acc.y -=vel.y*(1.0-damping);
                 }
                 
                 if(dyBot > 0)
                 {
                     acc.y += (dyBot)/10.0;
-                    acc.y -=vel.y*(1.0-damping); 	
+                    acc.y -=vel.y*(1.0-damping);
                 }
                 else if(nearBot)
                 {
                     acc.y += (dyBot)/10.0;
-                    acc.y -=vel.y*(1.0-damping); 	
+                    acc.y -=vel.y*(1.0-damping);
                 }
                 
                 nearTop = false;
@@ -257,18 +269,18 @@ public:
 			sRect->x = -rect->x; //reset sRect position
 			sRect->y = -rect->y;
             
-            vel *=damping;    
-            acc.set(0); 
+            vel *=damping;
+            acc.set(0);
         }
 		
 		//Scroll Position
 		scrollPosMin = rect->percentInside(sRect->getRelativeMinX(), sRect->getRelativeMinY());
 		scrollPosMax = rect->percentInside(sRect->getRelativeMaxX(), sRect->getRelativeMaxY());
-				
+		
 		for(int i = 0; i < widgets.size(); i++)
 		{
 			widgets[i]->update();
-		}		
+		}
     }
     
     virtual void draw()
@@ -336,10 +348,10 @@ public:
         glDisable(GL_STENCIL_TEST); //Disable using the stencil buffer
 		
         ofPopStyle();
-//        fbo.end();
-//        
-//        ofSetColor(255);
-//        fbo.draw(sRect->getX(), sRect->getY());
+		//        fbo.end();
+		//
+		//        ofSetColor(255);
+		//        fbo.draw(sRect->getX(), sRect->getY());
     }
     
     virtual void setPosition(int x, int y)
@@ -347,41 +359,41 @@ public:
         rect->x = x;
         rect->y = y;
         sRect->x = x;
-        sRect->y = y; 
+        sRect->y = y;
     }
-
+	
     void drawScrollableRect()
     {
         sRect->draw();
     }
-    	
+	
 #ifdef TARGET_OPENGLES
     void touchDown(ofTouchEventArgs& touch)
-    {        
+    {
         if(sRect->inside(touch.x, touch.y))
         {
 			for(int i = 0; i < widgets.size(); i++)
 			{
                 if(widgets[i]->isHit(touch.x, touch.y))
-                {            
+                {
                     if(widgets[i]->isDraggable())
                     {
-                        hitWidget = true;                                                                        
+                        hitWidget = true;
                     }
-                    widgets[i]->touchDown(touch); 
+                    widgets[i]->touchDown(touch);
                 }
 			}
-		}        
+		}
         
         if(sRect->inside(touch.x, touch.y) && touch.id == 0)
         {
-            hit = true; 
-            isScrolling = false; 
-            vel.set(0);             
+            hit = true;
+            isScrolling = false;
+            vel.set(0);
         }
     }
     
-    void touchMoved(ofTouchEventArgs& touch) 
+    void touchMoved(ofTouchEventArgs& touch)
     {
         for(int i = 0; i < widgets.size(); i++)
         {
@@ -394,63 +406,63 @@ public:
             {
                 if(isScrolling != true)
                 {
-                    isScrolling = true; 
+                    isScrolling = true;
                     ppos = ofPoint(touch.x,touch.y);
-                    vel.set(0); 
+                    vel.set(0);
                 }
                 else
                 {
-                    pos = ofPoint(touch.x, touch.y);             
-                    vel = pos-ppos; 
-                    if(scrollX) rect->x +=vel.x; 
+                    pos = ofPoint(touch.x, touch.y);
+                    vel = pos-ppos;
+                    if(scrollX) rect->x +=vel.x;
                     if(scrollY) rect->y +=vel.y;
 					sRect->x = -rect->x;
 					sRect->y = -rect->y;
-                    ppos = pos; 
+                    ppos = pos;
                 }
             }
-        }        
+        }
     }
     
-    void touchUp(ofTouchEventArgs& touch) 
+    void touchUp(ofTouchEventArgs& touch)
     {
         for(int i = 0; i < widgets.size(); i++)
         {
-            if(widgets[i]->isVisible())	widgets[i]->touchUp(touch); 
+            if(widgets[i]->isVisible())	widgets[i]->touchUp(touch);
         }
         
-        hit = false; 
-        hitWidget = false; 
+        hit = false;
+        hitWidget = false;
         if(isScrolling)
         {
             isScrolling = false;
             pos = ofPoint(touch.x,touch.y);
-        }        
+        }
     }
     
-    void touchCancelled(ofTouchEventArgs& touch) 
+    void touchCancelled(ofTouchEventArgs& touch)
     {
         for(int i = 0; i < widgets.size(); i++)
         {
-            if(widgets[i]->isVisible())	widgets[i]->touchUp(touch); 
+            if(widgets[i]->isVisible())	widgets[i]->touchUp(touch);
         }
         
-        hit = false; 
-        hitWidget = false; 
+        hit = false;
+        hitWidget = false;
         if(isScrolling)
         {
-            isScrolling = false; 
+            isScrolling = false;
             pos = ofPoint(touch.x,touch.y);
-        }        
-    } 
+        }
+    }
     
 #endif
-
-    void mouseDragged(int x, int y, int button) 
-    {	
+	
+    void mouseDragged(int x, int y, int button)
+    {
         for(int i = 0; i < widgets.size(); i++)
         {
-            if(widgets[i]->isVisible())	widgets[i]->mouseDragged(x, y, button); 
+            if(widgets[i]->isVisible())	widgets[i]->mouseDragged(x, y, button);
         }
         
         if(hit)
@@ -459,92 +471,92 @@ public:
             {
                 if(isScrolling != true)
                 {
-                    isScrolling = true; 
+                    isScrolling = true;
                     ppos = ofPoint(x,y);
                     vel.set(0,0);
                 }
                 else
                 {
-                    pos = ofPoint(x, y);             
-                    vel = pos-ppos; 
-                    if(scrollX) rect->x +=vel.x; 
+                    pos = ofPoint(x, y);
+                    vel = pos-ppos;
+                    if(scrollX) rect->x +=vel.x;
                     if(scrollY) rect->y +=vel.y;
 					sRect->x = -rect->x;
 					sRect->y = -rect->y;
-                    ppos = pos; 
+                    ppos = pos;
                 }
             }
         }
     }
     
-    void mousePressed(int x, int y, int button) 
+    void mousePressed(int x, int y, int button)
     {
         if(sRect->inside(x, y))
         {
-            hit = true; 
+            hit = true;
             for(int i = 0; i < widgets.size(); i++)
             {
                 if(widgets[i]->isVisible())
                 {
                     if(widgets[i]->isHit(x, y))
-                    {            
+                    {
                         if(widgets[i]->isDraggable())
                         {
-                            hitWidget = true;                                                                        
+                            hitWidget = true;
                         }
-                        widgets[i]->mousePressed(x, y, button); 
+                        widgets[i]->mousePressed(x, y, button);
                     }
                 }
-            }       
-        }		
+            }
+        }
         
-        isScrolling = false; 
+        isScrolling = false;
         vel.set(0,0);
     }
     
-    void mouseReleased(int x, int y, int button) 
-    {	
+    void mouseReleased(int x, int y, int button)
+    {
         for(int i = 0; i < widgets.size(); i++)
         {
-            if(widgets[i]->isVisible()) widgets[i]->mouseReleased(x, y, button); 
-        }            
+            if(widgets[i]->isVisible()) widgets[i]->mouseReleased(x, y, button);
+        }
         
-        hit = false; 
-        hitWidget = false; 
+        hit = false;
+        hitWidget = false;
         if(isScrolling)
         {
-            isScrolling = false; 
+            isScrolling = false;
             pos = ofPoint(x,y);
         }
-    }	
-
+    }
+	
     ofxUIRectangle *getSRect()
     {
-        return sRect; 
+        return sRect;
     }
 	
 	bool isDraggable()
     {
         return true;
     }
-
+	
 protected:
-//    ofFbo fbo;    //experimental 
+	//    ofFbo fbo;    //experimental
     ofxUIRectangle *sRect;
     bool isScrolling;
-    bool snapping; 
-    bool scrollX, scrollY; 
+    bool snapping;
+    bool scrollX, scrollY;
     bool nearTop, nearBot, nearRight, nearLeft;
     bool hitWidget;
 	ofPoint scrollPosMin, scrollPosMax;
-    ofPoint pos; 
-    ofPoint ppos; 
-    ofPoint vel; 
-    ofPoint acc; 
+    ofPoint pos;
+    ofPoint ppos;
+    ofPoint vel;
+    ofPoint acc;
     float damping;
-    float stickyDistance;     
+    float stickyDistance;
 };
-    
-    
-    
+
+
+
 #endif

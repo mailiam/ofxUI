@@ -61,6 +61,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2A447CCD16B8FC0F0099FEDF /* ofxUIMediaAsset.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxUIMediaAsset.h; sourceTree = "<group>"; };
 		2A8A3798169AB39800353E00 /* ofxUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxUI.h; sourceTree = "<group>"; };
 		2A8A3799169AB39800353E00 /* ofxUI2DPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxUI2DPad.h; sourceTree = "<group>"; };
 		2A8A379A169AB39800353E00 /* ofxUIBaseDraws.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxUIBaseDraws.h; sourceTree = "<group>"; };
@@ -102,7 +103,7 @@
 		2A8A37BE169AB39800353E00 /* ofxUIWaveform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxUIWaveform.h; sourceTree = "<group>"; };
 		2A8A37BF169AB39800353E00 /* ofxUIWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxUIWidget.h; sourceTree = "<group>"; };
 		2A8A37C0169AB39800353E00 /* ofxUIWidgetWithLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxUIWidgetWithLabel.h; sourceTree = "<group>"; };
-		2AC5D01116B6CB5C008D8D16 /* ofxUIDirList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxUIDirList.h; sourceTree = "<group>"; };
+		2AC5D01116B6CB5C008D8D16 /* ofxUIDirList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxUIDirList.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		2ACB745616B3B60B00BFD930 /* ofxUIDraggableCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxUIDraggableCanvas.h; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -319,6 +320,7 @@
 				2A8A37BF169AB39800353E00 /* ofxUIWidget.h */,
 				2A8A37C0169AB39800353E00 /* ofxUIWidgetWithLabel.h */,
 				2AC5D01116B6CB5C008D8D16 /* ofxUIDirList.h */,
+				2A447CCD16B8FC0F0099FEDF /* ofxUIMediaAsset.h */,
 			);
 			name = src;
 			path = ../../../addons/ofxUI/src;
