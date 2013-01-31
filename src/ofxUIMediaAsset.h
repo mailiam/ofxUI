@@ -46,7 +46,7 @@ public:
         label->setEmbedded(true);
 
 		
-		kind = OFX_UI_WIDGET_LABELBUTTON;
+		kind = OFX_UI_WIDGET_MEDIAASSET;
         paddedRect = new ofxUIRectangle(-padding, -padding, padding*2.0, padding*2.0);
 		paddedRect->setParent(rect);
         
@@ -87,13 +87,12 @@ public:
         drawFillHighlight();
         
 		
-		if(thumbnail.isAllocated()) {
+		if(rect->height>thumbnailSize*0.75) {
 			ofFill();
 			ofSetColor(255);
 			thumbnail.draw(rect->getX()+padding,rect->getY()+padding,thumbnailSize,thumbnailSize*0.75);
+			font->drawString(description, label->getRect()->getX(), label->getRect()->getY()+label->getRect()->getHeight()*2);
 		}
-				
-		font->drawString(description, label->getRect()->getX(), label->getRect()->getY()+label->getRect()->getHeight()*2);
 		
         ofPopStyle();
     }
@@ -118,8 +117,9 @@ public:
 		parent = _parent;
         if(rect->height == 0)
         {
-            rect->height = label->getPaddingRect()->height+padding*2.0;
+            rect->height = label->getPaddingRect()->height+padding;
         }
+
 		ofxUIRectangle *labelrect = label->getRect();
 		//ofxUIRectangle *descriptionrect = descriptionLabel->getRect();
         if(autoSize)
@@ -146,7 +146,10 @@ public:
         float pw = rect->getWidth();
         
 		labelrect->y = padding;//(int)(ph*.5 - h*.5);
-        labelrect->x = padding*2+thumbnailSize;//pw-w-padding;//(int)(pw*.5 - w*.5-padding*.5);
+		if(rect->height>thumbnailSize*0.75)
+			labelrect->x = padding*2+thumbnailSize;//pw-w-padding;//(int)(pw*.5 - w*.5-padding*.5);
+		else
+			labelrect->x = padding;
 		
 		paddedRect->height = rect->height+padding*2.0;
         paddedRect->width = rect->width+padding*2.0;
