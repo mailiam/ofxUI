@@ -120,8 +120,12 @@ public:
             rect->height = label->getPaddingRect()->height+padding;
         }
 
+		if(rect->height < thumbnailSize*0.75 && *value)
+		{
+			rect->height = thumbnailSize*0.75+padding*2;
+		}
+		
 		ofxUIRectangle *labelrect = label->getRect();
-		//ofxUIRectangle *descriptionrect = descriptionLabel->getRect();
         if(autoSize)
         {
             rect->width = label->getPaddingRect()->width+padding*2.0;
@@ -168,7 +172,7 @@ public:
 			thumbnail.loadImage(*file);
 			description += "image/"+ext+"\n";
 			description += ofToString(thumbnail.getWidth()) + " X " + ofToString(thumbnail.getHeight())+"\n";
-		}else if(ext ==""){
+		}else if(file->isDirectory()){
 			ofDirectory *dir = new ofDirectory();
 			dir->listDir(file->getAbsolutePath());
 			description += (string)"folder"+"\n";

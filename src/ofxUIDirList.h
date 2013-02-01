@@ -57,42 +57,77 @@ public:
 		
 		listUI = (ofxUIScrollableCanvas* )addWidgetLeft(new ofxUIScrollableCanvas(0, 0, rect->width - SCROLL_WIDTH-padding, rect->height));
         listUI->setDamping(0.1);
+		listUI->setScrollableDirections(false, false);
 		listUI->setStickyDistance(5);
 		listUI->setWidgetSpacing(0);
 		listUI->setPadding(padding);
 		listUI->setDrawBack(false);
 
         for(int i=0; i<dir->numFiles(); i++){
-            listUI->addWidgetDown(new ofxUIMediaAsset(dir->getFile(i),300,100));
+            listUI->addWidgetDown(new ofxUIMediaAsset(dir->getFile(i),listUI->getRect()->width,listUI->getRect()->height/10));
         }
 		listUI->autoSizeToFitWidgets();
 		
-		scrollbar = (ofxUIRangeSlider *) addWidgetRight(new ofxUIRangeSlider("scrollbar", dir->numFiles(), 1, 1, 0, SCROLL_WIDTH, rect->getHeight()));
+		scrollbar = (ofxUIRangeSlider *) addWidgetRight(new ofxUIRangeSlider("SCROLLBAR", dir->numFiles(), 1, 1, 0, SCROLL_WIDTH, rect->getHeight()));
 		scrollbar->setLabelVisible(false);
 		scrollbar->setLabelPrecision(0);
 		
+		ofAddListener(newGUIEvent, this, &ofxUIDirList::guiEvent);
+		ofAddListener(listUI->newGUIEvent, this, &ofxUIDirList::guiEvent);
     }
 	
 	void update(){
-		if(scrollbar->isHit(ofGetMouseX(), ofGetMouseY())){
-			float diff = (scrollbar->getPercentValueHigh()-scrollbar->getPercentValueLow());
-			float h = listUI->getSRect()->getHeight()/round(diff*dir->numFiles());
+
+		scrollbar->setValueHigh(ofMap(listUI->getScrollPosMin().y, 0, 1, 1, dir->numFiles(),true));
+		scrollbar->setValueLow(ofMap(listUI->getScrollPosMax().y, 0, 1, 1, dir->numFiles(),true));
+		
+		ofxUICanvas::update();
+	}
+	
+	void guiEvent(ofxUIEventArgs &e)
+	{
+		if(e.widget->getName() == "SCROLLBAR")
+		{
+			ofxUIRangeSlider *slider = (ofxUIRangeSlider *) e.widget;
 			
-			vector <ofxUIWidget *> listedWidgets = listUI->getWidgetsOfType(OFX_UI_WIDGET_MEDIAASSET);			
+			float diff = (scrollbar->getPercentValueHigh()-scrollbar->getPercentValueLow());
+			float h = listUI->getSRect()->getHeight()/max((int)round(diff*dir->numFiles()), 1);
+			
+			float yy =0;
+			
+			vector <ofxUIWidget *> listedWidgets = listUI->getWidgetsOfType(OFX_UI_WIDGET_MEDIAASSET);
 			for(int i=0; i<listedWidgets.size(); i++){
 				ofxUIMediaAsset * widget = (ofxUIMediaAsset*)listedWidgets[i];
 				widget->getRect()->height = h-widget->getPadding();
-				widget->getRect()->y = (h*i);
+				widget->getRect()->y = yy; //(h*i);
 				widget->setParent(listUI);
+				yy+=widget->getRect()->height + widget->getPadding();
+			}
+			listUI->autoSizeToFitWidgets();
+			listUI->setScrollPosY(1-scrollbar->getPercentValueHigh());
+		}
+		else if(e.widget->getKind() == OFX_UI_WIDGET_MEDIAASSET)
+		{
+			ofxUIRangeSlider *slider = (ofxUIRangeSlider *) e.widget;
+			
+			float diff = (scrollbar->getPercentValueHigh()-scrollbar->getPercentValueLow());
+			float h = listUI->getSRect()->getHeight()/max((int)round(diff*dir->numFiles()), 1);
+			
+			float yy =0;
+			
+			vector <ofxUIWidget *> listedWidgets = listUI->getWidgetsOfType(OFX_UI_WIDGET_MEDIAASSET);
+			for(int i=0; i<listedWidgets.size(); i++){
+				ofxUIMediaAsset * widget = (ofxUIMediaAsset*)listedWidgets[i];
+				widget->getRect()->height = h-widget->getPadding();
+				widget->getRect()->y = yy; //(h*i);
+				widget->setParent(listUI);
+				yy+=widget->getRect()->height + widget->getPadding();
 			}
 			listUI->autoSizeToFitWidgets();
 			listUI->setScrollPosY(1-scrollbar->getPercentValueHigh());
 		}else{
-			scrollbar->setValueHigh(ofMap(listUI->getScrollPosMin().y, 0, 1, 1, dir->numFiles(),true));
-			scrollbar->setValueLow(ofMap(listUI->getScrollPosMax().y, 0, 1, 1, dir->numFiles(),true));
+			
 		}
-		
-		ofxUICanvas::update();
 	}
 	
 	

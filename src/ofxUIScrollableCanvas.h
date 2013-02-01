@@ -160,12 +160,16 @@ public:
 	
 	ofPoint getScrollPosMin()
 	{
-		return scrollPosMin;
+		ofPoint p(sRect->getMinX()/rect->width, sRect->getMinY()/rect->height);
+		return scrollPosMin = p;
 	}
 	
 	ofPoint getScrollPosMax()
 	{
-		return scrollPosMax;
+		//Scroll Position
+		ofPoint p(sRect->getMaxX()/rect->height, sRect->getMaxY()/rect->height);
+		return scrollPosMax = p;
+;
 	}
     
 	void autoSizeToFitWidgets() //Setting padding size accordung to sRect allows proper widget arrangement
@@ -272,10 +276,6 @@ public:
             vel *=damping;
             acc.set(0);
         }
-		
-		//Scroll Position
-		scrollPosMin = rect->percentInside(sRect->getRelativeMinX(), sRect->getRelativeMinY());
-		scrollPosMax = rect->percentInside(sRect->getRelativeMaxX(), sRect->getRelativeMaxY());
 		
 		for(int i = 0; i < widgets.size(); i++)
 		{
