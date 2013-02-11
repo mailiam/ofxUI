@@ -320,6 +320,7 @@ public:
     {
         ofPushStyle();
         
+		/*
 		//Cleaner Masking out with stencil//
         //set up to draw stencil
         ///////////////////////////////////////////////////////
@@ -345,7 +346,7 @@ public:
         //Draw all pixels where the stencil buffer is 1...
         
         ///////////////////////////////////////////////////
-        
+        */
         
 		glDisable(GL_DEPTH_TEST);
         glDisable(GL_LIGHTING);
@@ -378,7 +379,7 @@ public:
 		}
 		
 		glDisable(GL_DEPTH_TEST);
-        glDisable(GL_STENCIL_TEST); //Disable using the stencil buffer
+        //glDisable(GL_STENCIL_TEST); //Disable using the stencil buffer
 		
         ofPopStyle();
 		//        fbo.end();

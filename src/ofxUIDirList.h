@@ -52,6 +52,8 @@ public:
             *dir = *directory;
         }
 		
+		selectedAsset = NULL;
+		
 		label = new ofxUILabel(0,0,(name+" LABEL"), name, OFX_UI_FONT_MEDIUM);
 		addEmbeddedWidget(label);
 		
@@ -88,48 +90,56 @@ public:
 	{
 		if(e.widget->getName() == "SCROLLBAR")
 		{
-			ofxUIRangeSlider *slider = (ofxUIRangeSlider *) e.widget;
-			
-			float diff = (scrollbar->getPercentValueHigh()-scrollbar->getPercentValueLow());
-			float h = listUI->getSRect()->getHeight()/max((int)round(diff*dir->numFiles()), 1);
-			
-			float yy =0;
-			
-			vector <ofxUIWidget *> listedWidgets = listUI->getWidgetsOfType(OFX_UI_WIDGET_MEDIAASSET);
-			for(int i=0; i<listedWidgets.size(); i++){
-				ofxUIMediaAsset * widget = (ofxUIMediaAsset*)listedWidgets[i];
-				widget->getRect()->height = h-widget->getPadding();
-				widget->getRect()->y = yy; //(h*i);
-				widget->setParent(listUI);
-				yy+=widget->getRect()->height + widget->getPadding();
-			}
-			listUI->autoSizeToFitWidgets();
-			listUI->setScrollPosY(1-scrollbar->getPercentValueHigh());
+			refreshView();
 		}
 		else if(e.widget->getKind() == OFX_UI_WIDGET_MEDIAASSET)
 		{
-			ofxUIRangeSlider *slider = (ofxUIRangeSlider *) e.widget;
-			
-			float diff = (scrollbar->getPercentValueHigh()-scrollbar->getPercentValueLow());
-			float h = listUI->getSRect()->getHeight()/max((int)round(diff*dir->numFiles()), 1);
-			
-			float yy =0;
-			
+			ofxUIMediaAsset *asset = (ofxUIMediaAsset*) e.widget;
 			vector <ofxUIWidget *> listedWidgets = listUI->getWidgetsOfType(OFX_UI_WIDGET_MEDIAASSET);
 			for(int i=0; i<listedWidgets.size(); i++){
 				ofxUIMediaAsset * widget = (ofxUIMediaAsset*)listedWidgets[i];
-				widget->getRect()->height = h-widget->getPadding();
-				widget->getRect()->y = yy; //(h*i);
-				widget->setParent(listUI);
-				yy+=widget->getRect()->height + widget->getPadding();
+				if(widget != e.widget)
+					widget->setValue(false);
 			}
-			listUI->autoSizeToFitWidgets();
-			listUI->setScrollPosY(1-scrollbar->getPercentValueHigh());
+			if(asset->getValue()) selectedAsset = asset;
+			else selectedAsset = NULL;
+			
+			refreshView();
+			triggerEvent(this);
 		}else{
 			
 		}
 	}
 	
+	void refreshView(){		
+		float diff = (scrollbar->getPercentValueHigh()-scrollbar->getPercentValueLow());
+		float listHeight = listUI->getSRect()->getHeight();
+		if(selectedAsset) {
+			float wh = selectedAsset->getRect()->height + selectedAsset->getPadding();
+			listHeight -= wh;
+			diff -= wh/listUI->getRect()->height;
+		}
+		int diffInt = (int)round(diff*dir->numFiles());
+		float h = listHeight/max(diffInt, 1);
+		
+		
+		float yy =0;
+		
+		vector <ofxUIWidget *> listedWidgets = listUI->getWidgetsOfType(OFX_UI_WIDGET_MEDIAASSET);
+		for(int i=0; i<listedWidgets.size(); i++){
+			ofxUIMediaAsset * widget = (ofxUIMediaAsset*)listedWidgets[i];
+			widget->getRect()->height = h-widget->getPadding();
+			widget->getRect()->y = yy; //(h*i);
+			widget->setParent(listUI);
+			yy+=widget->getRect()->height + widget->getPadding();
+		}
+		listUI->autoSizeToFitWidgets();
+		listUI->setScrollPosY(1-scrollbar->getPercentValueHigh());
+	}
+	
+	ofxUIMediaAsset * getSelected(){
+		return selectedAsset;
+	}
 	
 	bool isDraggable()
     {
@@ -143,6 +153,8 @@ protected:
     ofDirectory *dir;
     bool useReference;
     bool drawLabel;
+	
+	ofxUIMediaAsset * selectedAsset;
 	
 	ofxUILabel *label;
 };

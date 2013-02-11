@@ -184,6 +184,10 @@ public:
 			thumbnail.allocate(thumbnailSize, thumbnailSize*0.75, OF_IMAGE_COLOR);
 		}
 	}
+	
+	ofFile * getFile(){
+		return file;
+	}
     
 	static ofImage getTypeIcon(string type)
 	{
