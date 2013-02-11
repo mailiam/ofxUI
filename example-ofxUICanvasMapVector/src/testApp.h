@@ -22,15 +22,38 @@ class testApp : public ofBaseApp
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
 	
-	ofxUICanvas *gui;   	
-	void guiEvent(ofxUIEventArgs &e);
+    void setupGUI1();
+    void setupGUI2();
+    void setupGUI3();
+    void setupGUI4();
+    void setupGUI5();
+    void setupGUI6();
+    
+    void saveGUISettings();
+    void loadGUISettings(); 
+    
+    vector<ofxUICanvas *> guis;
+	map<string, ofxUICanvas *> guihash; 
+    void guiEvent(ofxUIEventArgs &e);
     bool drawFill; 
 	float red, green, blue, alpha; 	
         
     ofColor backgroundColor; 
     float radius; 
     int resolution;
-    ofPoint position;    
+    ofPoint position;
+    
+    float noiseScale; 
+    float *buffer;
+    vector<float> xPos;
+    vector<float> yPos;
+    
+    ofxUIMovingGraph *xGraph;
+    ofxUIMovingGraph *yGraph;
+    
+    int bufferSize;
+    
+    ofImage *image; 
 };
 
 #endif
