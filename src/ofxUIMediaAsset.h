@@ -120,7 +120,7 @@ public:
             rect->height = label->getPaddingRect()->height+padding;
         }
 
-		if(rect->height < thumbnailSize*0.75 && *value)
+		if(rect->height < thumbnailSize*0.75 && *value && autoSize)
 		{
 			rect->height = thumbnailSize*0.75+padding*2;
 		}
@@ -128,7 +128,7 @@ public:
 		ofxUIRectangle *labelrect = label->getRect();
         if(autoSize)
         {
-            rect->width = label->getPaddingRect()->width+padding*2.0;
+            //rect->width = label->getPaddingRect()->width+padding*2.0;
         }
         else
         {
@@ -168,19 +168,25 @@ public:
 		
 		description = "";
 		
-		if(ext == "png" || ext == "jpg" || ext == "jpeg"){
-			thumbnail.loadImage(*file);
-			description += "image/"+ext+"\n";
-			description += ofToString(thumbnail.getWidth()) + " X " + ofToString(thumbnail.getHeight())+"\n";
-		}else if(file->isDirectory()){
-			ofDirectory *dir = new ofDirectory();
-			dir->listDir(file->getAbsolutePath());
-			description += (string)"folder"+"\n";
-			description += ofToString(dir->numFiles())+" files"+"\n";
-			delete dir;
-			thumbnail.allocate(thumbnailSize, thumbnailSize*0.75, OF_IMAGE_COLOR);
+		if(file->exists()){			
+			if(ext == "png" || ext == "jpg" || ext == "jpeg"){
+				thumbnail.loadImage(*file);
+				description += "image/"+ext+"\n";
+				description += ofToString(thumbnail.getWidth()) + " X " + ofToString(thumbnail.getHeight())+"\n";
+			}else if(file->isDirectory()){
+				ofDirectory *dir = new ofDirectory();
+				dir->listDir(file->getAbsolutePath());
+				description += (string)"folder"+"\n";
+				description += ofToString(dir->numFiles())+" files"+"\n";
+				delete dir;
+				thumbnail.allocate(thumbnailSize, thumbnailSize*0.75, OF_IMAGE_COLOR);
+			}else{
+				description += "etc/"+ext+"\n";
+				thumbnail.allocate(thumbnailSize, thumbnailSize*0.75, OF_IMAGE_COLOR);
+			}
 		}else{
-			description += "etc/"+ext+"\n";
+			ofLogError("ofxUIMediaAsset")<<"file "<<  file->getAbsolutePath() << " does not exist";
+			description = "file does not exist";
 			thumbnail.allocate(thumbnailSize, thumbnailSize*0.75, OF_IMAGE_COLOR);
 		}
 	}
@@ -201,6 +207,10 @@ public:
 		}
 		
 		return *icon;
+	}
+	
+	void setAutoSize(bool autoSizing){
+		autoSize = autoSizing;
 	}
 	
 protected:    //inherited: ofxUIRectangle *rect; ofxUIWidget *parent;
