@@ -148,13 +148,13 @@ public:
 	
 	void setScrollPosX(float pct)
 	{
-		sRect->x = pct*(rect->width);
+		sRect->x = pct*(sRect->width);
 		rect->x = -sRect->x;
 	}
 	
 	void setScrollPosY(float pct)
 	{
-		sRect->y = pct*(rect->height);
+		sRect->y = pct*(sRect->height);
 		rect->y = -sRect->y;
 	}
 	

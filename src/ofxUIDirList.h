@@ -66,7 +66,9 @@ public:
 		listUI->setDrawBack(false);
 
         for(int i=0; i<dir->numFiles(); i++){
-            listUI->addWidgetDown(new ofxUIMediaAsset(dir->getFile(i),listUI->getRect()->width,listUI->getRect()->height/10));
+			ofxUIMediaAsset * asset = new ofxUIMediaAsset(dir->getFile(i),listUI->getRect()->width,listUI->getRect()->height/10);
+			asset->setAutoSize(true);
+            listUI->addWidgetDown(asset);
         }
 		listUI->autoSizeToFitWidgets();
 		
@@ -74,14 +76,17 @@ public:
 		scrollbar->setLabelVisible(false);
 		scrollbar->setLabelPrecision(0);
 		
+		scrollbar->setValueHigh(0);
+		scrollbar->setValueLow(10);
+		
 		ofAddListener(newGUIEvent, this, &ofxUIDirList::guiEvent);
 		ofAddListener(listUI->newGUIEvent, this, &ofxUIDirList::guiEvent);
     }
 	
 	void update(){
 
-		scrollbar->setValueHigh(ofMap(listUI->getScrollPosMin().y, 0, 1, 1, dir->numFiles(),true));
-		scrollbar->setValueLow(ofMap(listUI->getScrollPosMax().y, 0, 1, 1, dir->numFiles(),true));
+		//scrollbar->setValueHigh(ofMap(listUI->getScrollPosMin().y, 0, 1, 1, dir->numFiles(),true));
+		//scrollbar->setValueLow(ofMap(listUI->getScrollPosMax().y, 0, 1, 1, dir->numFiles(),true));
 		
 		ofxUICanvas::update();
 	}
@@ -119,8 +124,8 @@ public:
 			listHeight -= wh;
 			diff -= wh/listUI->getRect()->height;
 		}
-		int diffInt = (int)round(diff*dir->numFiles());
-		float h = listHeight/max(diffInt, 1);
+		float diffValue = round(diff*dir->numFiles());
+		float h = (listHeight/max(diffValue, 1.0f));
 		
 		
 		float yy =0;
