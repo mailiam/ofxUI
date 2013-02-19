@@ -137,7 +137,8 @@ public:
 		label->setRectParent(rect);
         label->setEmbedded(true);
         label->setVisible(false);
-        draw_fill = true; 
+        draw_fill = true;
+		sign = 0;
     }
     
     virtual void update()
@@ -161,7 +162,7 @@ public:
             
             if(displayLabel)
             {
-                label->drawString(x+rect->getWidth(), y, name);
+                label->drawString(x+rect->getWidth(), y, label->getLabel());
             }
             
             for(int i = 0; i < displaystring.size(); i++)
@@ -186,7 +187,7 @@ public:
             
             if(displayLabel)
             {
-                label->drawString(x+rect->getWidth(), y, name);
+                label->drawString(x+rect->getWidth(), y, label->getLabel());
             }
             
             for(int i = 0; i < displaystring.size(); i++)
@@ -464,17 +465,21 @@ public:
 	
 	void setTextString(string s)
 	{
-        if(*value > 0)
-        {
-            s = "+" + s; 
-        }
-        else
-        {
-            s = "-" + s;
-        }
+		if(sign == 0) {
+			if(*value > 0)
+			{
+				s = "+" + s; 
+			}
+			else
+			{
+				s = "-" + s;
+			}
+		}else{
+			s = sign + s;
+		}
         textstring = s;
         displaystring = s;
-        label->setLabel(displaystring);
+        //label->setLabel(displaystring);
     }
 	
 	void setParent(ofxUIWidget *_parent)
@@ -512,16 +517,22 @@ public:
         displayLabel = _displayLabel;
         if(displayLabel)
         {
-            paddedRect->width = rect->width+padding*2.0 + label->getStringWidth(name)+padding*3.0;
+            paddedRect->width = rect->width+padding*2.0 + label->getStringWidth(label->getLabel())+padding*3.0;
         }
         else
         {
             paddedRect->width = rect->width+padding*2.0;
         }
     }
+	
+	void setSign(char s){
+		sign = s;
+		setTextString(numToString(abs(*value), precision, numOfPrecisionZones, '0'));
+    }
     
-protected:    //inherited: ofxUIRectangle *rect; ofxUIWidget *parent; 
+protected:    //inherited: ofxUIRectangle *rect; ofxUIWidget *parent;
     bool displayLabel;
+	char sign;
 	string textstring;
     string displaystring;
     int precision; 
