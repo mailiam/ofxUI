@@ -52,8 +52,6 @@ public:
             *dir = *directory;
         }
 		
-		selectedAsset = NULL;
-		
 		label = new ofxUILabel(0,0,(name+" LABEL"), name, OFX_UI_FONT_MEDIUM);
 		addEmbeddedWidget(label);
 		
@@ -64,13 +62,6 @@ public:
 		listUI->setWidgetSpacing(0);
 		listUI->setPadding(padding);
 		listUI->setDrawBack(false);
-
-        for(int i=0; i<dir->numFiles(); i++){
-			ofxUIMediaAsset * asset = new ofxUIMediaAsset(dir->getFile(i),listUI->getRect()->width,max(listUI->getRect()->height/dir->numFiles(), 30.f));
-			asset->setAutoSize(true);
-            listUI->addWidgetDown(asset);
-        }
-		listUI->autoSizeToFitWidgets();
 		
 		scrollbar = (ofxUIRangeSlider *) addWidgetRight(new ofxUIRangeSlider("SCROLLBAR", dir->numFiles(), 1, 1, 0, SCROLL_WIDTH, rect->getHeight()));
 		scrollbar->setLabelVisible(false);
@@ -79,11 +70,7 @@ public:
 		scrollbar->setValueHigh(1);
 		scrollbar->setValueLow(10);
 		
-		if(dir->numFiles()<2) {
-			scrollbar->setVisible(false);
-		}
-			
-		refreshView();
+		updateList();
 		
 		ofAddListener(newGUIEvent, this, &ofxUIDirList::guiEvent);
 		ofAddListener(listUI->newGUIEvent, this, &ofxUIDirList::guiEvent);
@@ -120,6 +107,27 @@ public:
 		}else{
 			
 		}
+	}
+	
+	void updateList(){
+		listUI->removeWidgets();
+		selectedAsset = NULL;
+		
+		for(int i=0; i<dir->numFiles(); i++){
+			ofxUIMediaAsset * asset = new ofxUIMediaAsset(dir->getFile(i),listUI->getSRect()->width,max(listUI->getSRect()->height/dir->numFiles(), 30.f));
+			asset->setAutoSize(true);
+            listUI->addWidgetDown(asset);
+        }
+		
+		scrollbar->setMaxAndMin(1, dir->numFiles());
+		scrollbar->setValueHigh(1);
+		scrollbar->setValueLow(10);
+		
+		if(dir->numFiles()<2) {
+			scrollbar->setVisible(false);
+		}
+		
+		refreshView();
 	}
 	
 	void refreshView(){
