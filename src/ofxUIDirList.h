@@ -66,7 +66,7 @@ public:
 		listUI->setDrawBack(false);
 
         for(int i=0; i<dir->numFiles(); i++){
-			ofxUIMediaAsset * asset = new ofxUIMediaAsset(dir->getFile(i),listUI->getRect()->width,listUI->getRect()->height/10);
+			ofxUIMediaAsset * asset = new ofxUIMediaAsset(dir->getFile(i),listUI->getRect()->width,max(listUI->getRect()->height/dir->numFiles(), 30.f));
 			asset->setAutoSize(true);
             listUI->addWidgetDown(asset);
         }
@@ -76,8 +76,14 @@ public:
 		scrollbar->setLabelVisible(false);
 		scrollbar->setLabelPrecision(0);
 		
-		scrollbar->setValueHigh(0);
+		scrollbar->setValueHigh(1);
 		scrollbar->setValueLow(10);
+		
+		if(dir->numFiles()<2) {
+			scrollbar->setVisible(false);
+		}
+			
+		refreshView();
 		
 		ofAddListener(newGUIEvent, this, &ofxUIDirList::guiEvent);
 		ofAddListener(listUI->newGUIEvent, this, &ofxUIDirList::guiEvent);
@@ -116,7 +122,8 @@ public:
 		}
 	}
 	
-	void refreshView(){		
+	void refreshView(){
+		if(listUI->getWidgetsOfType(OFX_UI_WIDGET_MEDIAASSET).size()<2) return;
 		float diff = (scrollbar->getPercentValueHigh()-scrollbar->getPercentValueLow());
 		float listHeight = listUI->getSRect()->getHeight();
 		if(selectedAsset) {
