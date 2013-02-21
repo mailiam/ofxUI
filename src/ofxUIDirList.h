@@ -115,7 +115,7 @@ public:
 		
 		for(int i=0; i<dir->numFiles(); i++){
 			ofxUIMediaAsset * asset = new ofxUIMediaAsset(dir->getFile(i),listUI->getSRect()->width,max(listUI->getSRect()->height/dir->numFiles(), 30.f));
-			asset->setAutoSize(true);
+			asset->setAutoSize(false); //disabling highlighting
             listUI->addWidgetDown(asset);
         }
 		
@@ -134,7 +134,7 @@ public:
 		if(listUI->getWidgetsOfType(OFX_UI_WIDGET_MEDIAASSET).size()<2) return;
 		float diff = (scrollbar->getPercentValueHigh()-scrollbar->getPercentValueLow());
 		float listHeight = listUI->getSRect()->getHeight();
-		if(selectedAsset) {
+		if(selectedAsset&&false) { //disabling highlighting
 			float wh = selectedAsset->getRect()->height + selectedAsset->getPadding();
 			listHeight -= wh;
 			diff -= wh/listUI->getRect()->height;
