@@ -87,7 +87,7 @@ public:
         drawFillHighlight();
         
 		
-		if(rect->height>thumbnailSize*0.75) {
+		if(rect->height>thumbnailSize*0.75 && false) { //disable thumbnail for now
 			ofFill();
 			ofSetColor(255);
 			thumbnail.draw(rect->getX()+padding,rect->getY()+padding,thumbnailSize,thumbnailSize*0.75);
@@ -117,7 +117,7 @@ public:
 		parent = _parent;
         if(rect->height == 0)
         {
-            rect->height = label->getPaddingRect()->height+padding;
+            //rect->height = label->getPaddingRect()->height+padding;
         }
 
 		if(rect->height < thumbnailSize*0.75 && *value && autoSize)
