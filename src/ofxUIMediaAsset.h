@@ -75,17 +75,7 @@ public:
         
         ofEnableBlendMode(OF_BLENDMODE_ALPHA);
         
-        drawPadded();
-        drawPaddedOutline();
-        
-        drawBack();
-        
-        drawOutline();
-        drawOutlineHighlight();
-        
-        drawFill();
-        drawFillHighlight();
-        
+		ofxUIToggle::draw();
 		
 		if(rect->height>thumbnailSize*0.75 && false) { //disable thumbnail for now
 			ofFill();
@@ -96,6 +86,28 @@ public:
 		
         ofPopStyle();
     }
+	
+	void drawBack(){		
+		if(draw_back)
+        {
+            ofFill();
+            ofSetColor(color_back);
+            rect->draw();
+			if(rect->height < label->getPaddingRect()->height){
+				float offset = fmod(rect->y*5,1.0f);				
+				offset = 1-fabs(offset-0.5)*4;
+				offset = offset*rect->width/4;
+				if(getParent()){
+					
+				}
+				float x = rect->getRelativeMinX()+rect->getHalfWidth()+offset;
+				float y = rect->getRelativeMaxY();
+				float h = 10;
+				float w = h*2;
+				ofTriangle(x-w/2, y, x+w/2, y, x, y+h);
+			}
+        }
+	}
 	
     void setLabelText(string labeltext)
     {
@@ -126,6 +138,13 @@ public:
 		}
 		
 		ofxUIRectangle *labelrect = label->getRect();
+		
+		if(rect->height < label->getPaddingRect()->height)
+        {
+            setLabelVisible(false);
+        }else
+			setLabelVisible(true);
+		
         if(autoSize)
         {
             //rect->width = label->getPaddingRect()->width+padding*2.0;
