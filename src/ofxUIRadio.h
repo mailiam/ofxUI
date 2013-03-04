@@ -35,6 +35,11 @@ public:
     {
         init(_name, names, _orientation, w, h, x, y);
     }
+	
+	ofxUIRadio(string _name, vector<ofxUIToggle*> buttons, int _orientation, float w, float h, float x = 0, float y = 0) : ofxUIWidgetWithLabel()
+    {
+        init(_name, buttons, _orientation, w, h, x, y);
+    }
     
     // DON'T USE THE NEXT CONSTRUCTORS
     // This is maintained for backward compatibility and will be removed on future releases
@@ -76,6 +81,32 @@ public:
 		}
         active = NULL; 
         allowMultiple = false; 
+    }
+	
+	void init(string _name, vector<ofxUIToggle*> buttons, int _orientation, float w, float h, float x = 0, float y = 0)
+    {
+        rect = new ofxUIRectangle(x,y,w,h);
+		name = string(_name);
+		kind = OFX_UI_WIDGET_RADIO;
+        
+        draw_back = false;
+        orientation = _orientation;
+		
+		paddedRect = new ofxUIRectangle(-padding, -padding, w+padding*2.0, h+padding*2.0);
+		paddedRect->setParent(rect);
+		
+		label = new ofxUILabel(0,0,(name+" LABEL"), name, OFX_UI_FONT_MEDIUM);
+		label->setParent(label);
+		label->setRectParent(rect);
+        label->setEmbedded(true);
+        
+		for(int i = 0; i < buttons.size(); i++)
+		{
+			ofxUIToggle *toggle = buttons[i];
+			toggles.push_back(toggle);
+		}
+        active = NULL;
+        allowMultiple = false;
     }
         
     virtual void setDrawPadding(bool _draw_padded_rect)
