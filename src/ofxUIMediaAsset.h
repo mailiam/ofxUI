@@ -169,9 +169,10 @@ public:
         float pw = rect->getWidth();
         
 		labelrect->y = padding;//(int)(ph*.5 - h*.5);
+		/* NO THUMBNAIL FOR NOW
 		if(rect->height>thumbnailSize*0.75)
 			labelrect->x = padding*2+thumbnailSize;//pw-w-padding;//(int)(pw*.5 - w*.5-padding*.5);
-		else
+		else*/
 			labelrect->x = padding;
 		
 		paddedRect->height = rect->height+padding*2.0;
