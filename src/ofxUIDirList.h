@@ -161,6 +161,10 @@ public:
 		return selectedAsset;
 	}
 	
+	ofxUIRangeSlider *getScrollbar(){
+		return scrollbar;
+	}
+	
 	bool isDraggable()
     {
         return true;
