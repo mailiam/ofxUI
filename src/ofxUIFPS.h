@@ -22,44 +22,20 @@
  
  **********************************************************************************/
 
-#ifndef OFXUI_FPS
-#define OFXUI_FPS
+#pragma once
 
-#include "ofxUILabel.h"
+#include "ofxUIWidgetWithLabel.h"
 
-class ofxUIFPS : public ofxUILabel
+class ofxUIFPS : public ofxUIWidgetWithLabel
 {
 public:    
-    ofxUIFPS(float x, float y, int _size) : ofxUILabel()
-    {
-        rect = new ofxUIRectangle(x,y,0,0); 
-        init("FPS", "FPS: 60.000", _size); 
-		kind = OFX_UI_WIDGET_FPS; 		
-        labelPrecision = 3;
-        autoSize = true; 
-    }
+    ofxUIFPS(float x, float y, int _size);
+    ofxUIFPS(int _size);
+    void setLabelPrecision(int _precision);
+    void setParent(ofxUIWidget *_parent);
     
-    ofxUIFPS(int _size) : ofxUILabel()
-    {
-        rect = new ofxUIRectangle(0,0,0,0); 
-        init("FPS", "FPS: 60.000", _size); 
-		kind = OFX_UI_WIDGET_FPS; 		
-        labelPrecision = 3;
-        autoSize = true; 
-    }    
-    
-	void update()
-	{
-		setLabel("FPS: " + ofToString(ofGetFrameRate(), labelPrecision));
-	}
-	
-    void setLabelPrecision(int _precision) {
-        labelPrecision = _precision;
-    }
-
-    
-protected:    //inherited: ofxUIRectangle *rect; ofxUIWidget *parent; 
-    int labelPrecision;    
+protected:
+	void update();
+    void init(float x, float y, string _name, string _label, int _size);
+    int labelPrecision;
 }; 
-
-#endif

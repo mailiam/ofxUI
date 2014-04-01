@@ -22,107 +22,28 @@
  
  **********************************************************************************/
 
-#ifndef OFXUI_IMAGE_TOGGLE
-#define OFXUI_IMAGE_TOGGLE
+#pragma once
 
-#include "ofxUIWidget.h"
+#include "ofxUIToggle.h"
+#include "ofxUIDefines.h"
 
-class ofxUIImageToggle : public ofxUIImageButton
+class ofxUIImageToggle : public ofxUIToggle
 {
 public:
-    ofxUIImageToggle(float x, float y, float w, float h, bool _value, string _pathURL, string _name) : ofxUIImageButton()
-    {
-        useReference = false; 
-        rect = new ofxUIRectangle(x,y,w,h); 
-        init(w, h, &_value, _pathURL, _name);         
-		kind = OFX_UI_WIDGET_IMAGETOGGLE; 		
-    }
-
-    ofxUIImageToggle(float w, float h, bool _value, string _pathURL, string _name) : ofxUIImageButton()
-    {
-        useReference = false; 
-        rect = new ofxUIRectangle(0,0,w,h); 
-        init(w, h, &_value, _pathURL, _name);         
-		kind = OFX_UI_WIDGET_IMAGETOGGLE; 		
-    }
-    
-    ofxUIImageToggle(float x, float y, float w, float h, bool *_value, string _pathURL, string _name) : ofxUIImageButton()
-    {
-        useReference = true;         
-        rect = new ofxUIRectangle(x,y,w,h); 
-        init(w, h, _value, _pathURL, _name);         
-		kind = OFX_UI_WIDGET_IMAGETOGGLE; 		
-    }
-    
-    ofxUIImageToggle(float w, float h, bool *_value, string _pathURL, string _name) : ofxUIImageButton()
-    {
-        useReference = true;                 
-        rect = new ofxUIRectangle(0,0,w,h); 
-        init(w, h, _value, _pathURL, _name);         
-		kind = OFX_UI_WIDGET_IMAGETOGGLE; 		
-    }    
-
-    void mouseMoved(int x, int y )
-    {
-        if(rect->inside(x, y))
-        {
-            state = OFX_UI_STATE_OVER;         
-        }    
-        else
-        {
-            state = OFX_UI_STATE_NORMAL;        
-        }
-        stateChange();         
-    }
-    
-    void mouseDragged(int x, int y, int button) 
-    {
-        if(hit)
-        {
-            state = OFX_UI_STATE_DOWN;         
-        }    
-        else
-        {
-            state = OFX_UI_STATE_NORMAL;        
-        }
-        stateChange();     
-    }
-    
-    void mousePressed(int x, int y, int button) 
-    {
-        if(rect->inside(x, y))
-        {
-            hit = true; 
-            state = OFX_UI_STATE_DOWN;         
-        }    
-        else
-        {
-            state = OFX_UI_STATE_NORMAL;        
-        }
-        stateChange();         
-    }
-    
-    void mouseReleased(int x, int y, int button) 
-    {
-        if(rect->inside(x, y) && hit)
-        {
-            setValue(!(*value)); 
-#ifdef TARGET_OPENGLES
-            state = OFX_UI_STATE_NORMAL;        
-#else            
-            state = OFX_UI_STATE_OVER; 
-#endif 
-			triggerEvent(this); 
-        }    
-        else
-        {
-            state = OFX_UI_STATE_NORMAL;         
-        }
-        stateChange();     
-        hit = false; 
-    }        
-    
-protected:    //inherited: ofxUIRectangle *rect; ofxUIWidget *parent; 
+    ofxUIImageToggle(float x, float y, float w, float h, bool _value, string _pathURL, string _name, int _size = OFX_UI_FONT_MEDIUM);
+    ofxUIImageToggle(float w, float h, bool _value, string _pathURL, string _name, int _size = OFX_UI_FONT_MEDIUM);
+    ofxUIImageToggle(float x, float y, float w, float h, bool *_value, string _pathURL, string _name, int _size = OFX_UI_FONT_MEDIUM);
+    ofxUIImageToggle(float w, float h, bool *_value, string _pathURL, string _name, int _size = OFX_UI_FONT_MEDIUM);
+    void init(float x, float y, float w, float h, bool *_value, string _pathURL, string _name, int _size = OFX_UI_FONT_SMALL);
+    virtual ~ofxUIImageToggle();
+    virtual void drawBack();
+    virtual void drawFill();
+    virtual void drawFillHighlight();
+    virtual void drawOutlineHighlight();
+    virtual ofImage *getImage();
+    virtual void setImage(ofImage *_img);
+                     
+protected:
+    ofImage *img;
+    bool bChangedImage;
 }; 
-
-#endif
